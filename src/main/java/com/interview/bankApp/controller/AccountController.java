@@ -1,26 +1,36 @@
 package com.interview.bankApp.controller;
 
 import com.interview.bankApp.model.Account;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.interview.bankApp.service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class AccountController {
 
+    @Autowired
+    AccountService accountService;
+
     @GetMapping("/accounts")
-    public List<Account> getAllAccounts() {
-        List<Account> list = new ArrayList<>();
-        Account a1 = new Account();
-        a1.setAccNumber("1234");
-        a1.setCurrency("RON");
-        Account a2 = new Account();
-        a2.setCurrency("EUR");
-        a2.setAccNumber("9999");
-        list.add(a1);
-        list.add(a2);
-        return list;
+    private List<Account> getAllAccounts() {
+        return accountService.getAllAccounts();
+    }
+
+    @GetMapping("/account/{id}")
+    private Account getAccountById(@PathVariable("id") int id) {
+        return accountService.getAccountById(id);
+    }
+
+    @DeleteMapping("/account/delete/{id}")
+    private void deleteAccount(@PathVariable("id") int id) {
+        accountService.deleteAccountById(id);
+    }
+
+    @PostMapping("/account")
+    private int createAccount(@RequestBody Account account){
+        accountService.createOrUpdateAccount(account);
+        return account.getId();
     }
 }
