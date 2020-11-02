@@ -1,10 +1,14 @@
 package com.interview.bankApp.controller;
 
+import com.interview.bankApp.exception.AccountNotFoundException;
 import com.interview.bankApp.model.Account;
 import com.interview.bankApp.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -19,8 +23,12 @@ public class AccountController {
     }
 
     @GetMapping("/account/{id}")
-    private Account getAccountById(@PathVariable("id") int id) {
-        return accountService.getAccountById(id);
+    private Account getAccountById(@PathVariable("id") int id, HttpServletResponse response) {
+        try {
+            return accountService.getAccountById(id);
+        } catch (AccountNotFoundException anfe) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Foo Not Found", anfe);
+        }
     }
 
     @DeleteMapping("/account/delete/{id}")

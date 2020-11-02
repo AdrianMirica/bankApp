@@ -1,5 +1,6 @@
 package com.interview.bankApp.service;
 
+import com.interview.bankApp.exception.AccountNotFoundException;
 import com.interview.bankApp.model.Account;
 import com.interview.bankApp.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,11 @@ public class AccountService {
         return accountList;
     }
 
-    public Account getAccountById(int id) {
+    public Account getAccountById(int id) throws AccountNotFoundException {
         if(accountRepository.findById(id).isPresent())
             return accountRepository.findById(id).get();
         else
-            return null; //exception
+            throw new AccountNotFoundException("Account not found in DB");
     }
 
     public void deleteAccountById(int id){
