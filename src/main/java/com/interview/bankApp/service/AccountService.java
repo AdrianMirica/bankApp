@@ -30,7 +30,7 @@ public class AccountService {
         if(accountRepository.findById(id).isPresent())
             return accountRepository.findById(id).get();
         else
-            throw new AccountNotFoundException("Account not found in DB");
+            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
     }
 
     public List<Account> getAccountByAccountNumber(String accNumber) {
@@ -57,7 +57,7 @@ public class AccountService {
             accountRepository.save(accountRepository.findById(id).get());
         }
         else
-            throw new AccountNotFoundException("Account not found in DB");
+            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
     }
 
     public void updateAccountValue(int id, double newValue) throws AccountNotFoundException {
@@ -66,7 +66,7 @@ public class AccountService {
             accountRepository.save(accountRepository.findById(id).get());
         }
         else
-            throw new AccountNotFoundException("Account not found in DB");
+            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
     }
 
     public List<Transaction> getAllTransactionsFromAnAccount(int id) throws AccountNotFoundException {
@@ -81,7 +81,7 @@ public class AccountService {
                     transactionList.add(transaction);}
             );
         } catch (AccountNotFoundException e) {
-            throw new AccountNotFoundException("Account not found in DB");
+            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
         }
         return transactionList;
     }
@@ -95,7 +95,7 @@ public class AccountService {
                     transactionList.add(transaction);}
             );
         } catch (AccountNotFoundException e) {
-            throw new AccountNotFoundException("Account not found in DB");
+            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
         }
         return transactionList;
     }
@@ -109,7 +109,7 @@ public class AccountService {
                     transactionList.add(transaction);}
             );
         } catch (AccountNotFoundException e) {
-            throw new AccountNotFoundException("Account not found in DB");
+            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
         }
         return transactionList;
     }
@@ -123,7 +123,7 @@ public class AccountService {
                     transactionList.add(transaction);}
             );
         } catch (AccountNotFoundException e) {
-            throw new AccountNotFoundException("Account not found in DB");
+            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
         }
         return transactionList;
     }

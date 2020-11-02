@@ -29,7 +29,7 @@ public class TransactionService {
         if(transactionRepository.findById(id).isPresent()) {
             return transactionRepository.findById(id).get();
         } else
-            throw new TransactionNotFoundException("Transaction not found");
+            throw new TransactionNotFoundException("Transaction with ID =" + id + " was not found");
     }
 
     public void createTransaction(Transaction transaction) {
