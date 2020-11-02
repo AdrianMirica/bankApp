@@ -15,14 +15,21 @@ public class Transaction {
     private int transactionId;
 
     @Column
-    private double transactionValue;
+    private Double transactionValue;
 
     @Column
     private LocalDateTime transactionDate;
+
+    @Column
+    private String transactionSender;
 
     @Column
     private String transactionReceiver;
 
     @Column
     private String transactionCurrency;
+
+    @ManyToOne
+    @JoinColumn(name = "accountId")
+    private Account account;
 }

@@ -39,7 +39,7 @@ public class AccountController {
 
     @PostMapping("/account")
     private int createAccount(@RequestBody Account account){
-        accountService.createOrUpdateAccount(account);
+        accountService.createAccount(account);
         return account.getAccountId();
     }
 

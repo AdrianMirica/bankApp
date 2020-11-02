@@ -1,14 +1,15 @@
 package com.interview.bankApp.controller;
 
+import com.interview.bankApp.exception.AccountNotFoundException;
 import com.interview.bankApp.exception.TransactionNotFoundException;
 import com.interview.bankApp.model.Transaction;
+import com.interview.bankApp.service.AccountService;
 import com.interview.bankApp.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -17,21 +18,13 @@ public class TransactionController {
     @Autowired
     TransactionService transactionService;
 
+    @Autowired
+    AccountService accountService;
+
     @GetMapping("/transactions")
     private List<Transaction> getAllTransactions() {
         return transactionService.getAllTransactions();
     }
-
-//    @GetMapping("/transactions/{accountNumber}")
-//    private List<Transaction> getAllTransactionsForAnAccount(@PathVariable("accountNumber") String accountNumber) {
-//        return transactionService.getAllTransactionsForAnAccount(accountNumber);
-//    }
-
-//    @GetMapping("/transactions/{accountNumber}/{desiredDate}")
-//    private List<Transaction> getAllTransactionsForAnAccountAfterDate(@PathVariable("accountNumber") String accountNumber,
-//                                                                      @PathVariable("desiredDate") Date desiredDate) {
-//        return transactionService.getAllTransactionsForAnAccountAfterDate(accountNumber,desiredDate);
-//    }
 
     @GetMapping("/transactions/{id}")
     private Transaction getTransactionById(@PathVariable("id") int id) {
@@ -44,8 +37,11 @@ public class TransactionController {
     }
 
     @PostMapping("/transaction")
-    private int createTransaction(@RequestBody Transaction transaction ){
+    private int createTransaction(@RequestBody Transaction transaction ) throws AccountNotFoundException {
         transactionService.createTransaction(transaction);
+        accountService.accountValueUpdateSender(transaction.getTransactionSender());
+        accountService.accountValueUpdateReceiver(transaction.getTransactionReceiver());
+
         return transaction.getTransactionId();
     }
 

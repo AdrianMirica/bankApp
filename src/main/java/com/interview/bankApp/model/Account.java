@@ -21,12 +21,12 @@ public class Account {
     private String accountNumber;
 
     @Column
-    private double accountValue;
+    private Double accountValue;
 
     @Column
     private String accountStatus;
 
-    @OneToMany(targetEntity = Transaction.class)
+    @OneToMany(mappedBy = "account")
     private List<Transaction> transactions;
 
 }
