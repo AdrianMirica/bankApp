@@ -1,5 +1,6 @@
 package com.interview.bankApp.service;
 
+import com.interview.bankApp.exception.TransactionNotFoundException;
 import com.interview.bankApp.model.Transaction;
 import com.interview.bankApp.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +44,11 @@ public class TransactionService {
         return transactionList;
     }
 
-    public Transaction getTransactionById(int id) {
+    public Transaction getTransactionById(int id) throws TransactionNotFoundException {
         if(transactionRepository.findById(id).isPresent()) {
             return transactionRepository.findById(id).get();
         } else
-            return null; // exceptie aici
+            throw new TransactionNotFoundException("Transaction not found");
     }
 
     public void createTransaction(Transaction transaction) {

@@ -36,9 +36,10 @@ public class AccountService {
         accountRepository.save(account);
     }
 
-    public void updateAccountStatus(int id, String status){
+    public void updateAccountStatus(int id, String status) throws AccountNotFoundException {
         if(accountRepository.findById(id).isPresent())
             accountRepository.findById(id).get().setAccountStatus(status);
-        //eroare de update
+        else
+            throw new AccountNotFoundException("Account not found in DB");
     }
 }

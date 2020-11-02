@@ -2,10 +2,7 @@ package com.interview.bankApp.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
@@ -17,7 +14,7 @@ public class Transaction {
     @Column
     private int transactionId;
 
-    @Column
+    @OneToOne(targetEntity = Account.class)
     private Account account;
 
     @Column
@@ -27,7 +24,7 @@ public class Transaction {
     private Date transactionDate;
 
     @Column
-    private String transactionExpeditor;
+    private final String transactionExpeditor = account.getAccountNumber();
 
     @Column
     private String transactionReceiver;

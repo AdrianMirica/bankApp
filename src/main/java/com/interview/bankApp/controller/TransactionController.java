@@ -1,9 +1,12 @@
 package com.interview.bankApp.controller;
 
+import com.interview.bankApp.exception.TransactionNotFoundException;
 import com.interview.bankApp.model.Transaction;
 import com.interview.bankApp.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -32,7 +35,11 @@ public class TransactionController {
 
     @GetMapping("/transactions/{id}")
     private Transaction getTransactionById(@PathVariable("id") int id) {
-        return transactionService.getTransactionById(id);
+        try {
+            return transactionService.getTransactionById(id);
+        } catch (TransactionNotFoundException tnfe) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found using ID = " + id, tnfe);
+        }
 
     }
 

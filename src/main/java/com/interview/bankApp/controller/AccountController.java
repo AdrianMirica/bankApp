@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -23,11 +22,11 @@ public class AccountController {
     }
 
     @GetMapping("/account/{id}")
-    private Account getAccountById(@PathVariable("id") int id, HttpServletResponse response) {
+    private Account getAccountById(@PathVariable("id") int id) {
         try {
             return accountService.getAccountById(id);
         } catch (AccountNotFoundException anfe) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Foo Not Found", anfe);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found using ID = " + id, anfe);
         }
     }
 
@@ -43,7 +42,14 @@ public class AccountController {
     }
 
     @PutMapping("/account/status/{id}")
-    private void updateAccountStatus(@PathVariable("id") int id, String status) {
-        accountService.updateAccountStatus(id, status);
+    private void updateAccountStatus(@PathVariable("id") int id) {
+        try {
+            if(accountService.getAccountById(id).getAccountStatus().equalsIgnoreCase("OPEN"))
+                accountService.updateAccountStatus(id, "CLOSED");
+            else
+                throw  new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Account is already closed for account with ID = " + id);
+        } catch (AccountNotFoundException anfe) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found using ID = " + id, anfe);
+        }
     }
 }
