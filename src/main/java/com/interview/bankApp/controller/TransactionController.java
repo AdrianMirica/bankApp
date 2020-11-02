@@ -55,7 +55,7 @@ public class TransactionController {
         return transaction.getTransactionId();
     }
 
-    @DeleteMapping("/transaction/delete/{id}")
+    @DeleteMapping("/transactions/delete/{id}")
     private void deleteTransaction(@PathVariable("id") int id) {
         transactionService.deleteTransactionById(id);
         logger.info("Transaction with ID = " + id + " was deleted.");

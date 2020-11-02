@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table
+
 public class Transaction {
 
     @Id
@@ -16,18 +18,23 @@ public class Transaction {
     private long transactionId;
 
     @Column
+    @NotNull
     private Double transactionValue;
 
     @Column
+    @NotNull
     private LocalDateTime transactionDate;
 
     @Column
+    @NotNull
     private String transactionSender;
 
     @Column
+    @NotNull
     private String transactionReceiver;
 
     @Column
+    @NotNull
     private String transactionCurrency;
 
     @ManyToOne
