@@ -1,5 +1,6 @@
 package com.interview.bankApp.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ public class Account {
 
     @Id
     @Column
-    private int accountId;
+    private long accountId;
 
     @Column
     private String accountCurrency;
@@ -27,6 +28,7 @@ public class Account {
     private String accountStatus;
 
     @OneToMany(mappedBy = "account")
+    @JsonManagedReference
     private List<Transaction> transactions;
 
 }

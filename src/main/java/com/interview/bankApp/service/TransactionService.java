@@ -1,6 +1,7 @@
 package com.interview.bankApp.service;
 
 import com.interview.bankApp.exception.TransactionNotFoundException;
+import com.interview.bankApp.model.Account;
 import com.interview.bankApp.model.Transaction;
 import com.interview.bankApp.repository.AccountRepository;
 import com.interview.bankApp.repository.TransactionRepository;
@@ -25,7 +26,7 @@ public class TransactionService {
         return transactionList;
     }
 
-    public Transaction getTransactionById(int id) throws TransactionNotFoundException {
+    public Transaction getTransactionById(long id) throws TransactionNotFoundException {
         if(transactionRepository.findById(id).isPresent()) {
             return transactionRepository.findById(id).get();
         } else
@@ -34,21 +35,15 @@ public class TransactionService {
 
     public void createTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
-        accountRepository.findAll().forEach(
-                account -> {
-                    if (account.getAccountNumber().equals(transaction.getTransactionSender())) {
-                        account.getTransactions().add(transaction);
-                    }
-                }
-        );
-        accountRepository.findAll().forEach(
-                account -> {
-                    if (account.getAccountNumber().equals(transaction.getTransactionReceiver())) {
-                        account.getTransactions().add(transaction);
-                    }
-                }
-        );
+
+        Account transactionSenderAccount = accountRepository.findByAccountNumber(transaction.getTransactionSender());
+        transactionSenderAccount.getTransactions().add(transaction);
+        accountRepository.save(transactionSenderAccount);
+
+        Account transactionReceiverAccount = accountRepository.findByAccountNumber(transaction.getTransactionReceiver());
+        transactionReceiverAccount.getTransactions().add(transaction);
+        accountRepository.save(transactionReceiverAccount);
     }
 
-    public void deleteTransactionById(int id) { transactionRepository.deleteById(id);}
+    public void deleteTransactionById(long id) { transactionRepository.deleteById(id);}
 }

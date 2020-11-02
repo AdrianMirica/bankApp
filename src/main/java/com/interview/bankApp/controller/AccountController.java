@@ -46,7 +46,7 @@ public class AccountController {
     }
 
     @PostMapping("/account")
-    private int createAccount(@RequestBody Account account){
+    private long createAccount(@RequestBody Account account){
         accountService.createAccount(account);
         logger.info("Account with ID = " + account.getAccountId() + " has been created!");
         return account.getAccountId();

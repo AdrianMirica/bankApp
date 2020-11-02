@@ -27,7 +27,7 @@ public class AccountService {
         return accountList;
     }
 
-    public Account getAccountById(int id) throws AccountNotFoundException {
+    public Account getAccountById(long id) throws AccountNotFoundException {
         if(accountRepository.findById(id).isPresent())
             return accountRepository.findById(id).get();
         else
@@ -41,10 +41,11 @@ public class AccountService {
                 accountList.add(account);
             }
         });
+        //I know that I could use the findByAccountNumber method, but I wanted to show another version using lambdas
         return accountList;
     }
 
-    public void deleteAccountById(int id){
+    public void deleteAccountById(long id){
         accountRepository.deleteById(id);
     }
 
@@ -52,7 +53,7 @@ public class AccountService {
         accountRepository.save(account);
     }
 
-    public void updateAccountStatus(int id, String status) throws AccountNotFoundException {
+    public void updateAccountStatus(long id, String status) throws AccountNotFoundException {
         if(accountRepository.findById(id).isPresent()) {
             accountRepository.findById(id).get().setAccountStatus(status);
             accountRepository.save(accountRepository.findById(id).get());
@@ -61,7 +62,7 @@ public class AccountService {
             throw new AccountNotFoundException("Account with ID = " + id + "was not found");
     }
 
-    public void updateAccountValue(int id, double newValue) throws AccountNotFoundException {
+    public void updateAccountValue(long id, double newValue) throws AccountNotFoundException {
         if(accountRepository.findById(id).isPresent()) {
             accountRepository.findById(id).get().setAccountValue(newValue);
             accountRepository.save(accountRepository.findById(id).get());
@@ -70,11 +71,11 @@ public class AccountService {
             throw new AccountNotFoundException("Account with ID = " + id + "was not found");
     }
 
-    public List<Transaction> getAllTransactionsFromAnAccount(int id) throws AccountNotFoundException {
+    public List<Transaction> getAllTransactionsFromAnAccount(long id) throws AccountNotFoundException {
          return getAccountById(id).getTransactions();
     }
 
-    public List<Transaction> getAllTransactionsFromAnAccountAfterDate(int id, LocalDateTime desiredDate) throws AccountNotFoundException {
+    public List<Transaction> getAllTransactionsFromAnAccountAfterDate(long id, LocalDateTime desiredDate) throws AccountNotFoundException {
         List<Transaction> transactionList = new ArrayList<>();
         try {
             getAccountById(id).getTransactions().forEach(
@@ -87,7 +88,7 @@ public class AccountService {
         return transactionList;
     }
 
-    public List<Transaction> getAllTransactionsForAnAccountForToday(int id) throws AccountNotFoundException {
+    public List<Transaction> getAllTransactionsForAnAccountForToday(long id) throws AccountNotFoundException {
         List<Transaction> transactionList = new ArrayList<>();
         LocalDate today = LocalDateTime.now().toLocalDate();
         try {
@@ -101,7 +102,7 @@ public class AccountService {
         return transactionList;
     }
 
-    public List<Transaction> getAllTransactionsForAnAccountForYesterday(int id) throws AccountNotFoundException {
+    public List<Transaction> getAllTransactionsForAnAccountForYesterday(long id) throws AccountNotFoundException {
         List<Transaction> transactionList = new ArrayList<>();
         LocalDate today = LocalDateTime.now().minusDays(1).toLocalDate();
         try {
@@ -115,7 +116,7 @@ public class AccountService {
         return transactionList;
     }
 
-    public List<Transaction> getAllTransactionsForAnAccountForLastHours(int id, long hours) throws AccountNotFoundException {
+    public List<Transaction> getAllTransactionsForAnAccountForLastHours(long id, long hours) throws AccountNotFoundException {
         List<Transaction> transactionList = new ArrayList<>();
         LocalDate today = LocalDateTime.now().minusHours(hours).toLocalDate();
         try {

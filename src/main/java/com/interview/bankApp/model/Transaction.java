@@ -1,5 +1,6 @@
 package com.interview.bankApp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ public class Transaction {
 
     @Id
     @Column
-    private int transactionId;
+    private long transactionId;
 
     @Column
     private Double transactionValue;
@@ -31,5 +32,6 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "accountId")
+    @JsonBackReference
     private Account account;
 }

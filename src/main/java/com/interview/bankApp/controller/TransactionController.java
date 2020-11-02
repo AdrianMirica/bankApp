@@ -43,7 +43,7 @@ public class TransactionController {
     }
 
     @PostMapping("/transaction")
-    private int createTransaction(@RequestBody Transaction transaction ) throws AccountNotFoundException {
+    private long createTransaction(@RequestBody Transaction transaction ) throws AccountNotFoundException {
         transactionService.createTransaction(transaction);
         logger.info("Transaction with ID = " + transaction.getTransactionId() + " was been created");
         accountService.accountValueUpdateSender(transaction.getTransactionSender());
