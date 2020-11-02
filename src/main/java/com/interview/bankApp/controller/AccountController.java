@@ -31,6 +31,11 @@ public class AccountController {
     @PostMapping("/account")
     private int createAccount(@RequestBody Account account){
         accountService.createOrUpdateAccount(account);
-        return account.getId();
+        return account.getAccountId();
+    }
+
+    @PutMapping("/account/status/{id}")
+    private void updateAccountStatus(@PathVariable("id") int id, String status) {
+        accountService.updateAccountStatus(id, status);
     }
 }

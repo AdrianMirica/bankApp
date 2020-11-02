@@ -14,15 +14,18 @@ public class Account {
 
     @Id
     @Column
-    private int id;
+    private int accountId;
 
     @Column
-    private String currency;
+    private String accountCurrency;
 
     @Column
-    private String accNumber;
+    private String accountNumber;
 
     @Column
-    private double amount;
+    private double accountValue;
+
+    @Column
+    private String accountStatus;
 
 }

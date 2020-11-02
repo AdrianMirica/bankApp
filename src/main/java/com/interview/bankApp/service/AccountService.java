@@ -21,7 +21,10 @@ public class AccountService {
     }
 
     public Account getAccountById(int id) {
-        return accountRepository.findById(id).get();
+        if(accountRepository.findById(id).isPresent())
+            return accountRepository.findById(id).get();
+        else
+            return null; //exception
     }
 
     public void deleteAccountById(int id){
@@ -30,5 +33,11 @@ public class AccountService {
 
     public void createOrUpdateAccount(Account account) {
         accountRepository.save(account);
+    }
+
+    public void updateAccountStatus(int id, String status){
+        if(accountRepository.findById(id).isPresent())
+            accountRepository.findById(id).get().setAccountStatus(status);
+        //eroare de update
     }
 }
