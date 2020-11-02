@@ -1,6 +1,7 @@
 package com.interview.bankApp.service;
 
 import com.interview.bankApp.exception.AccountNotFoundException;
+import com.interview.bankApp.exception.InsufficientAmountException;
 import com.interview.bankApp.model.Account;
 import com.interview.bankApp.model.Transaction;
 import com.interview.bankApp.repository.AccountRepository;
@@ -133,7 +134,10 @@ public class AccountService {
         double senderAccountValue = senderAccount.getAccountValue();
         List<Transaction> senderTransactionsList =  senderAccount.getTransactions();
         for(Transaction transaction : senderTransactionsList) {
-            senderAccountValue -= transaction.getTransactionValue();
+            if(transaction.getTransactionValue() <= senderAccountValue)
+                senderAccountValue -= transaction.getTransactionValue();
+            else
+                throw new InsufficientAmountException("The account with account number = " + senderAccount.getAccountNumber() + " has insufficient funds");
         }
         updateAccountValue(senderAccount.getAccountId(), senderAccountValue);
     }
