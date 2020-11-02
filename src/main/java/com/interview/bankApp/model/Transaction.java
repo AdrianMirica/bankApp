@@ -3,7 +3,7 @@ package com.interview.bankApp.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -14,17 +14,11 @@ public class Transaction {
     @Column
     private int transactionId;
 
-    @OneToOne(targetEntity = Account.class)
-    private Account account;
-
     @Column
     private double transactionValue;
 
     @Column
-    private Date transactionDate;
-
-    @Column
-    private final String transactionExpeditor = account.getAccountNumber();
+    private LocalDateTime transactionDate;
 
     @Column
     private String transactionReceiver;

@@ -22,16 +22,16 @@ public class TransactionController {
         return transactionService.getAllTransactions();
     }
 
-    @GetMapping("/transactions/{accountNumber}")
-    private List<Transaction> getAllTransactionsForAnAccount(@PathVariable("accountNumber") String accountNumber) {
-        return transactionService.getAllTransactionsForAnAccount(accountNumber);
-    }
+//    @GetMapping("/transactions/{accountNumber}")
+//    private List<Transaction> getAllTransactionsForAnAccount(@PathVariable("accountNumber") String accountNumber) {
+//        return transactionService.getAllTransactionsForAnAccount(accountNumber);
+//    }
 
-    @GetMapping("/transactions/{accountNumber}/{desiredDate}")
-    private List<Transaction> getAllTransactionsForAnAccountAfterDate(@PathVariable("accountNumber") String accountNumber,
-                                                                      @PathVariable("desiredDate") Date desiredDate) {
-        return transactionService.getAllTransactionsForAnAccountAfterDate(accountNumber,desiredDate);
-    }
+//    @GetMapping("/transactions/{accountNumber}/{desiredDate}")
+//    private List<Transaction> getAllTransactionsForAnAccountAfterDate(@PathVariable("accountNumber") String accountNumber,
+//                                                                      @PathVariable("desiredDate") Date desiredDate) {
+//        return transactionService.getAllTransactionsForAnAccountAfterDate(accountNumber,desiredDate);
+//    }
 
     @GetMapping("/transactions/{id}")
     private Transaction getTransactionById(@PathVariable("id") int id) {
@@ -48,4 +48,7 @@ public class TransactionController {
         transactionService.createTransaction(transaction);
         return transaction.getTransactionId();
     }
+
+    @DeleteMapping("/transaction/delete/{id}")
+    private void deleteTransaction(@PathVariable("id") int id) {transactionService.deleteTransactionById(id);}
 }

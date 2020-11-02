@@ -2,10 +2,8 @@ package com.interview.bankApp.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -27,5 +25,8 @@ public class Account {
 
     @Column
     private String accountStatus;
+
+    @OneToMany(targetEntity = Transaction.class)
+    private List<Transaction> transactions;
 
 }

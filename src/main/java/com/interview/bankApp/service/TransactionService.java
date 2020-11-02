@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -22,28 +21,6 @@ public class TransactionService {
         return transactionList;
     }
 
-    public List<Transaction> getAllTransactionsForAnAccount(String accountNumber) {
-        List<Transaction> transactionList = new ArrayList<>();
-        transactionRepository.findAll().forEach(
-                transaction -> {
-                    if (transaction.getAccount().getAccountNumber().equalsIgnoreCase(accountNumber))
-                        transactionList.add(transaction);
-                }
-        );
-        return transactionList;
-    }
-
-    public List<Transaction> getAllTransactionsForAnAccountAfterDate(String accountNumber, Date desiredDate) {
-        List<Transaction> transactionList = new ArrayList<>();
-        transactionRepository.findAll().forEach(
-                transaction -> {
-                    if (transaction.getAccount().getAccountNumber().equalsIgnoreCase(accountNumber) && transaction.getTransactionDate().after(desiredDate))
-                        transactionList.add(transaction);
-                }
-        );
-        return transactionList;
-    }
-
     public Transaction getTransactionById(int id) throws TransactionNotFoundException {
         if(transactionRepository.findById(id).isPresent()) {
             return transactionRepository.findById(id).get();
@@ -54,4 +31,6 @@ public class TransactionService {
     public void createTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
     }
+
+    public void deleteTransactionById(int id) { transactionRepository.deleteById(id);}
 }
