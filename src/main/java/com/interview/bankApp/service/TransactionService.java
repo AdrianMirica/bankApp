@@ -33,6 +33,10 @@ public class TransactionService {
             throw new TransactionNotFoundException("Transaction with ID =" + id + " was not found");
     }
 
+    /**
+     * This method creates a transaction and also updates the {@code accountValues} for the sender and receiver
+     * @param transaction
+     */
     public void createTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
 

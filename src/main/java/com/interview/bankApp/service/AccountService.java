@@ -20,6 +20,11 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+/**
+ * This is the {@code @Service} class for the account
+ * @author Adrian
+ * @version 1.0
+ */
 @Service
 public class AccountService {
 
@@ -28,12 +33,22 @@ public class AccountService {
     @Autowired
     AccountRepository accountRepository;
 
+    /**
+     * This method returns all the accounts from the {@code accountRepository}
+     * @return {@code List<Account>}
+     */
     public List<Account> getAllAccounts() {
         List<Account> accountList = new ArrayList<>();
         accountRepository.findAll().forEach(accountList::add);
         return accountList;
     }
 
+    /**
+     * This method returns a specific account from the {@code accountRepository}
+     * @param id represents the account id
+     * @return {@code Account}
+     * @throws AccountNotFoundException - if the {@code id} is not found in the database this error is thrown
+     */
     public Account getAccountById(long id) throws AccountNotFoundException {
         if(accountRepository.findById(id).isPresent())
             return accountRepository.findById(id).get();
@@ -41,6 +56,11 @@ public class AccountService {
             throw new AccountNotFoundException("Account with ID = " + id + "was not found");
     }
 
+    /**
+     * This method returns a specific account from the {@code accountRepository} using the {@code accNumber}
+     * @param accNumber - parameter used to retrieve the account
+     * @return {@code Account}
+     */
     public List<Account> getAccountByAccountNumber(String accNumber) {
         List<Account> accountList = new ArrayList<>();
         accountRepository.findAll().forEach(account -> {
@@ -52,10 +72,19 @@ public class AccountService {
         return accountList;
     }
 
+    /**
+     * This method removes a specific account that is identified by id
+     * @param id - long variable that represents the account id
+     */
     public void deleteAccountById(long id){
         accountRepository.deleteById(id);
     }
 
+    /**
+     * This method creates a new account. Fields are validated using {@method allowOnlyLettersAndDigits} so that invalid input cannot be entered.
+     * @param account - new account information
+     * @throws InvalidInputException - if the validation are not meet this error is thrown
+     */
     public void createAccount(Account account) throws InvalidInputException {
         if(allowOnlyLettersAndDigits(account.getAccountNumber()) && account.getAccountValue() >= 0)
             accountRepository.save(account);
@@ -151,6 +180,11 @@ public class AccountService {
         return transactionList;
     }
 
+    /**
+     * This method updates the {@code accountValue} for the sender
+     * @param accountNumberSender - parameter used to identify the sender account
+     * @throws AccountNotFoundException -  if the account is not found, error is thrown
+     */
     public void accountValueUpdateSender(String accountNumberSender) throws AccountNotFoundException {
         Account senderAccount =  getAccountByAccountNumber(accountNumberSender).get(0);
         double senderAccountValue = senderAccount.getAccountValue();
@@ -164,6 +198,11 @@ public class AccountService {
         updateAccountValue(senderAccount.getAccountId(), senderAccountValue);
     }
 
+    /**
+     * This method updates the {@code accountValue} for the receiver
+     * @param accountNumberSender- parameter used to identify the sender account
+     * @throws AccountNotFoundException -  if the account is not found, error is thrown
+     */
     public void accountValueUpdateReceiver(String accountNumberSender) throws AccountNotFoundException {
         Account senderAccount = getAccountByAccountNumber(accountNumberSender).get(0);
         List<Transaction> senderTransactionList = senderAccount.getTransactions();
@@ -176,6 +215,11 @@ public class AccountService {
         }
     }
 
+    /**
+     * This method checks if the text entered has only letters and digits
+     * @param textToBeVerified
+     * @return {@code boolean}
+     */
     private boolean allowOnlyLettersAndDigits(String textToBeVerified) {
         return textToBeVerified.matches("\\w+");
     }

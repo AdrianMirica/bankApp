@@ -14,6 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+/**
+ * This is the REST controlloer that handles the transactions
+ * @author Adrian
+ * @version 1.0
+ */
 @RestController
 public class TransactionController {
 
@@ -25,14 +30,23 @@ public class TransactionController {
     @Autowired
     AccountService accountService;
 
+    /**
+     * This method returns all transactions using a {@code @GetMapping} on the /transactions endpoint
+     * @return {@code List<Transaction>}
+     */
     @GetMapping("/transactions")
     private List<Transaction> getAllTransactions() {
         logger.info("All transaction are fetched from the database");
         return transactionService.getAllTransactions();
     }
 
+    /**
+     * This method returns a specific transaction based on the transaction id
+     * @param id - long variable used to identify the transaction
+     * @return {@code Transaction}
+     */
     @GetMapping("/transactions/{id}")
-    private Transaction getTransactionById(@PathVariable("id") int id) {
+    private Transaction getTransactionById(@PathVariable("id") long id) {
         try {
             return transactionService.getTransactionById(id);
         } catch (TransactionNotFoundException tnfe) {
@@ -42,6 +56,12 @@ public class TransactionController {
 
     }
 
+    /**
+     * This method creates a new transaction using a {@code @PostMapping} that has in the body of the request the information about the transaction
+     * @param transaction - the information about transaction that is send into the body of the request in JSON format
+     * @return {@code id} - the id of the newly created transaction
+     * @throws AccountNotFoundException
+     */
     @PostMapping("/transaction")
     private long createTransaction(@RequestBody Transaction transaction ) throws AccountNotFoundException {
         transactionService.createTransaction(transaction);
@@ -55,6 +75,10 @@ public class TransactionController {
         return transaction.getTransactionId();
     }
 
+    /**
+     * This method deletes a specific transaction identified by the transaction id
+     * @param id - used to identify the transaction that we want to delete
+     */
     @DeleteMapping("/transactions/delete/{id}")
     private void deleteTransaction(@PathVariable("id") int id) {
         transactionService.deleteTransactionById(id);
