@@ -53,7 +53,7 @@ public class AccountService {
         if(accountRepository.findById(id).isPresent())
             return accountRepository.findById(id).get();
         else
-            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
+            throw new AccountNotFoundException("Account with ID = " + id + " was not found");
     }
 
     /**
@@ -61,15 +61,8 @@ public class AccountService {
      * @param accNumber - parameter used to retrieve the account
      * @return {@code Account}
      */
-    public List<Account> getAccountByAccountNumber(String accNumber) {
-        List<Account> accountList = new ArrayList<>();
-        accountRepository.findAll().forEach(account -> {
-            if(account.getAccountNumber().equals(accNumber)) {
-                accountList.add(account);
-            }
-        });
-        //I know that I could use the findByAccountNumber method, but I wanted to show another version using lambdas
-        return accountList;
+    public Account getAccountByAccountNumber(String accNumber) {
+        return accountRepository.findByAccountNumber(accNumber);
     }
 
     /**
@@ -88,8 +81,8 @@ public class AccountService {
     public void createAccount(Account account) throws InvalidInputException {
         if(allowOnlyLettersAndDigits(account.getAccountNumber()) && account.getAccountValue() >= 0)
             accountRepository.save(account);
-        else throw new InvalidInputException("You have entered some invalid information for this account: " + account.toString());
-
+        else throw new InvalidInputException("You have entered some invalid information for this account. Please check accountNumber or accountValue. AccountNumber = "
+                + account.getAccountNumber() + " ; AccountValue = " +account.getAccountValue());
     }
 
     public void updateAccountStatus(long id, String status) throws AccountNotFoundException {
@@ -98,25 +91,25 @@ public class AccountService {
             accountRepository.save(accountRepository.findById(id).get());
         }
         else
-            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
+            throw new AccountNotFoundException("Account with ID = " + id + " was not found");
     }
 
     public void updateAccountValue(long id, double newAccountValue) throws AccountNotFoundException {
         if(accountRepository.findById(id).isPresent()) {
             accountRepository.findById(id).get().setAccountValue(newAccountValue);
             accountRepository.save(accountRepository.findById(id).get());
-            logger.info("Account with ID = " + id + "was updated with accountValue =" + newAccountValue);
+            logger.info("Account with ID = " + id + " was updated with accountValue =" + newAccountValue);
         }
         else {
-            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
+            throw new AccountNotFoundException("Account with ID = " + id + " was not found");
         }
     }
 
-    public List<Transaction> getAllTransactionsFromAnAccount(long id) throws AccountNotFoundException {
+    public List<Transaction> getAllTransactionsForAnAccount(long id) throws AccountNotFoundException {
          return getAccountById(id).getTransactions();
     }
 
-    public List<Transaction> getAllTransactionsFromAnAccountAfterDate(long id, String desiredDateString) throws AccountNotFoundException, InvalidInputException {
+    public List<Transaction> getAllTransactionsForAnAccountAfterDate(long id, String desiredDateString) throws AccountNotFoundException, InvalidInputException {
         List<Transaction> transactionList = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate desiredDateConverted = LocalDate.parse(desiredDateString, formatter);
@@ -130,36 +123,36 @@ public class AccountService {
                     transactionList.add(transaction);}
             );
         } catch (AccountNotFoundException e) {
-            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
+            throw new AccountNotFoundException("Account with ID = " + id + " was not found");
         }
         return transactionList;
     }
 
     public List<Transaction> getAllTransactionsForAnAccountForToday(long id) throws AccountNotFoundException {
         List<Transaction> transactionList = new ArrayList<>();
-        LocalDate today = LocalDateTime.now().toLocalDate();
-        logger.info("Today= " + today);
-        try {
-            getAccountById(id).getTransactions().forEach(
-                    transaction -> {if(transaction.getTransactionDate().toLocalDate().isAfter(today))
-                    transactionList.add(transaction);}
-            );
-        } catch (AccountNotFoundException e) {
-            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
-        }
-        return transactionList;
-    }
-
-    public List<Transaction> getAllTransactionsForAnAccountForYesterday(long id) throws AccountNotFoundException {
-        List<Transaction> transactionList = new ArrayList<>();
         LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
+        logger.info("Today= " + yesterday);
         try {
             getAccountById(id).getTransactions().forEach(
                     transaction -> {if(transaction.getTransactionDate().toLocalDate().isAfter(yesterday))
                     transactionList.add(transaction);}
             );
         } catch (AccountNotFoundException e) {
-            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
+            throw new AccountNotFoundException("Account with ID = " + id + " was not found");
+        }
+        return transactionList;
+    }
+
+    public List<Transaction> getAllTransactionsForAnAccountForYesterday(long id) throws AccountNotFoundException {
+        List<Transaction> transactionList = new ArrayList<>();
+        LocalDate dayBeforeYesterday = LocalDateTime.now().minusDays(2).toLocalDate();
+        try {
+            getAccountById(id).getTransactions().forEach(
+                    transaction -> {if(transaction.getTransactionDate().toLocalDate().isAfter(dayBeforeYesterday))
+                    transactionList.add(transaction);}
+            );
+        } catch (AccountNotFoundException e) {
+            throw new AccountNotFoundException("Account with ID = " + id + " was not found");
         }
         return transactionList;
     }
@@ -168,14 +161,14 @@ public class AccountService {
         List<Transaction> transactionList = new ArrayList<>();
         if(hours <= 0)
             throw new InvalidInputException("You have entered a invalid parameter, " + hours + " . Hours parameter should be always positive");
-        LocalDate date = LocalDateTime.now().minusHours(hours).toLocalDate();
+        LocalDateTime time = LocalDateTime.now().minusHours(hours);
         try {
             getAccountById(id).getTransactions().forEach(
-                    transaction -> {if(transaction.getTransactionDate().toLocalDate().isAfter(date))
+                    transaction -> {if(transaction.getTransactionDate().isAfter(time))
                     transactionList.add(transaction);}
             );
         } catch (AccountNotFoundException e) {
-            throw new AccountNotFoundException("Account with ID = " + id + "was not found");
+            throw new AccountNotFoundException("Account with ID = " + id + " was not found");
         }
         return transactionList;
     }
@@ -186,7 +179,7 @@ public class AccountService {
      * @throws AccountNotFoundException -  if the account is not found, error is thrown
      */
     public void accountValueUpdateSender(String accountNumberSender) throws AccountNotFoundException {
-        Account senderAccount =  getAccountByAccountNumber(accountNumberSender).get(0);
+        Account senderAccount =  getAccountByAccountNumber(accountNumberSender);
         double senderAccountValue = senderAccount.getAccountValue();
         List<Transaction> senderTransactionsList =  senderAccount.getTransactions();
         for(Transaction transaction : senderTransactionsList) {
@@ -204,11 +197,11 @@ public class AccountService {
      * @throws AccountNotFoundException -  if the account is not found, error is thrown
      */
     public void accountValueUpdateReceiver(String accountNumberSender) throws AccountNotFoundException {
-        Account senderAccount = getAccountByAccountNumber(accountNumberSender).get(0);
+        Account senderAccount = getAccountByAccountNumber(accountNumberSender);
         List<Transaction> senderTransactionList = senderAccount.getTransactions();
         for (Transaction transaction : senderTransactionList) {
             String receiverAccountNumber = transaction.getTransactionReceiver();
-            Account receiverAccount = getAccountByAccountNumber(receiverAccountNumber).get(0);
+            Account receiverAccount = getAccountByAccountNumber(receiverAccountNumber);
             double receiverAccountValue = receiverAccount.getAccountValue() ;
             receiverAccountValue += transaction.getTransactionValue();
             updateAccountValue(receiverAccount.getAccountId(), receiverAccountValue);

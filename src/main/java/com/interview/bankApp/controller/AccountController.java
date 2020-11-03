@@ -109,7 +109,7 @@ public class AccountController {
     private List<Transaction> getAllTransactionsFromAnAccount(@PathVariable("id") int id) {
         try {
             logger.info("All transactions for account with ID =" + id + " were fetched");
-            return accountService.getAllTransactionsFromAnAccount(id);
+            return accountService.getAllTransactionsForAnAccount(id);
         } catch (AccountNotFoundException anfe) {
             logger.error(anfe.getMessage(), anfe);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found using ID = " + id, anfe);
@@ -125,7 +125,7 @@ public class AccountController {
     @GetMapping("/accounts/{id}/transactions/{desiredDate}")
     private List<Transaction> getAllTransactionsFromAnAccountAfterDate(@PathVariable("id") int id, @PathVariable("desiredDate") String desiredDate) {
         try {
-            return accountService.getAllTransactionsFromAnAccountAfterDate(id, desiredDate);
+            return accountService.getAllTransactionsForAnAccountAfterDate(id, desiredDate);
         } catch (AccountNotFoundException anfe) {
             logger.error(anfe.getMessage(), anfe);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found using ID = " + id, anfe);

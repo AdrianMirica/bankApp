@@ -1,6 +1,7 @@
 package com.interview.bankApp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table
-
+@Builder
 public class Transaction {
 
     @Id

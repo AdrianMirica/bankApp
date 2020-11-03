@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Entity
 @Table
+@Builder
 public class Account {
 
     @Id
